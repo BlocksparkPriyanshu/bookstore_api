@@ -37,14 +37,20 @@ def register():
 @app.route('/api/login', methods=['POST'])
 def login():
     data = request.get_json()
-
-    
     username=data.get('username')
     password=data.get('password')
 
+    cursor =db.cursor()
+    select_query="SELECT * FROM user.user_table WHERE username = %s AND password = %s"
+    cursor.execute(select_query,(username,password))
+    user=cursor.fetchone()
+    db.commit()
+
+    if user:
+        return jsonify("Login Successfully")
+    else:
+        return jsonify("Please enter correct username or password")
     
-    
-    return jsonify({'message': 'Login successful'}), 200
     
 
 
